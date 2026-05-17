@@ -54,6 +54,11 @@ struct VideoPlayerView: UIViewControllerRepresentable {
         private var timeObserver: Any?
         private var cancellables = Set<AnyCancellable>()
 
+        // Progress update throttling
+        private var isUpdating = false
+        private var pendingPosition: Double?
+        private let updateQueue = DispatchQueue(label: "com.videoclient.progressUpdate")
+
         init(video: VideoItem, serverURL: URL?) {
             self.video = video
             self.serverURL = serverURL
@@ -61,7 +66,7 @@ struct VideoPlayerView: UIViewControllerRepresentable {
         }
 
         func startTracking() {
-            guard let player = player, let serverURL = serverURL else { return }
+            guard let player = player, serverURL != nil else { return }
 
             // Periodic progress updates (every 10 seconds)
             progressTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true) { [weak self] _ in
@@ -116,12 +121,47 @@ struct VideoPlayerView: UIViewControllerRepresentable {
             // Only report if position is valid and greater than 0
             guard position > 0 && position.isFinite else { return }
 
-            Task {
-                try? await apiService.updateWatchProgress(
-                    serverURL: serverURL,
-                    videoPath: video.urlPath,
-                    position: position
-                )
+            updateQueue.async { [weak self] in
+                guard let self = self else { return }
+
+                if self.isUpdating {
+                    // Update in progress - replace any pending update with this new one
+                    self.pendingPosition = position
+                } else {
+                    // No update in progress - execute immediately
+                    self.executeUpdate(position: position)
+                }
+            }
+        }
+
+        private func executeUpdate(position: Double) {
+            guard let serverURL = serverURL else { return }
+
+            isUpdating = true
+
+            Task { [weak self] in
+                guard let self = self else { return }
+
+                do {
+                    try await self.apiService.updateWatchProgress(
+                        serverURL: serverURL,
+                        videoPath: self.video.urlPath,
+                        position: position
+                    )
+                } catch {
+                    // Silently fail - don't spam user with network errors
+                }
+
+                // Update completed - check if there's a pending update
+                self.updateQueue.async {
+                    self.isUpdating = false
+
+                    if let pendingPosition = self.pendingPosition {
+                        // Execute the pending update (newest one)
+                        self.pendingPosition = nil
+                        self.executeUpdate(position: pendingPosition)
+                    }
+                }
             }
         }
 
