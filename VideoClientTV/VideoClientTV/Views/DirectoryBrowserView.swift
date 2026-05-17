@@ -178,44 +178,63 @@ struct VideoCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 15) {
-            // Thumbnail
-            if let thumbnailURL = thumbnailURL {
-                AsyncImage(url: thumbnailURL) { phase in
-                    switch phase {
-                    case .empty:
-                        ZStack {
-                            Color.secondary.opacity(0.2)
-                            ProgressView()
-                                .scaleEffect(1.5)
-                        }
-                        .frame(height: 200)
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
+            // Thumbnail with progress bar
+            ZStack(alignment: .bottom) {
+                if let thumbnailURL = thumbnailURL {
+                    AsyncImage(url: thumbnailURL) { phase in
+                        switch phase {
+                        case .empty:
+                            ZStack {
+                                Color.secondary.opacity(0.2)
+                                ProgressView()
+                                    .scaleEffect(1.5)
+                            }
                             .frame(height: 200)
-                            .clipped()
-                    case .failure:
-                        ZStack {
-                            Color.secondary.opacity(0.2)
-                            Image(systemName: "film.fill")
-                                .font(.system(size: 60))
-                                .foregroundColor(.gray)
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(height: 200)
+                                .clipped()
+                        case .failure:
+                            ZStack {
+                                Color.secondary.opacity(0.2)
+                                Image(systemName: "film.fill")
+                                    .font(.system(size: 60))
+                                    .foregroundColor(.gray)
+                            }
+                            .frame(height: 200)
+                        @unknown default:
+                            EmptyView()
                         }
-                        .frame(height: 200)
-                    @unknown default:
-                        EmptyView()
                     }
+                } else {
+                    ZStack {
+                        Color.secondary.opacity(0.2)
+                        Image(systemName: "film.fill")
+                            .font(.system(size: 60))
+                            .foregroundColor(.gray)
+                    }
+                    .frame(height: 200)
                 }
-            } else {
-                ZStack {
-                    Color.secondary.opacity(0.2)
-                    Image(systemName: "film.fill")
-                        .font(.system(size: 60))
-                        .foregroundColor(.gray)
+
+                // Progress bar
+                if video.watchProgress > 0 {
+                    GeometryReader { geometry in
+                        ZStack(alignment: .leading) {
+                            Rectangle()
+                                .fill(Color.black.opacity(0.3))
+                                .frame(height: 6)
+
+                            Rectangle()
+                                .fill(Color.red)
+                                .frame(width: geometry.size.width * video.watchProgress, height: 6)
+                        }
+                    }
+                    .frame(height: 6)
                 }
-                .frame(height: 200)
             }
+            .frame(height: 200)
 
             // Video info
             VStack(alignment: .leading, spacing: 8) {

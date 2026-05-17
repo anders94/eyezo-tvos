@@ -88,4 +88,96 @@ class APIService {
         components.percentEncodedPath = "/api/thumbnail/\(videoPath)"
         return components.url
     }
+
+    // MARK: - Watch Progress
+
+    func updateWatchProgress(serverURL: URL, videoPath: String, position: Double) async throws {
+        let progressURL = serverURL.appendingPathComponent("api/watch-progress")
+
+        let update = WatchProgressUpdate(path: videoPath, position: position)
+        let encoder = JSONEncoder()
+        let data = try encoder.encode(update)
+
+        var request = URLRequest(url: progressURL)
+        request.httpMethod = "POST"
+        request.httpBody = data
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        do {
+            let (_, response) = try await URLSession.shared.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw NetworkError.invalidResponse
+            }
+
+            guard httpResponse.statusCode == 200 else {
+                throw NetworkError.serverError(httpResponse.statusCode)
+            }
+        } catch let error as NetworkError {
+            throw error
+        } catch {
+            throw NetworkError.networkFailure(error)
+        }
+    }
+
+    func getWatchProgress(serverURL: URL, videoPath: String) async throws -> WatchProgress? {
+        var components = URLComponents(url: serverURL, resolvingAgainstBaseURL: false)!
+        components.percentEncodedPath = "/api/watch-progress/\(videoPath)"
+
+        guard let progressURL = components.url else {
+            throw NetworkError.invalidURL
+        }
+
+        do {
+            let (data, response) = try await URLSession.shared.data(from: progressURL)
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw NetworkError.invalidResponse
+            }
+
+            guard httpResponse.statusCode == 200 else {
+                // 404 means no progress saved, return nil
+                if httpResponse.statusCode == 404 {
+                    return nil
+                }
+                throw NetworkError.serverError(httpResponse.statusCode)
+            }
+
+            let decoder = JSONDecoder()
+            let progress = try decoder.decode(WatchProgress.self, from: data)
+            return progress
+        } catch let error as NetworkError {
+            throw error
+        } catch {
+            throw NetworkError.networkFailure(error)
+        }
+    }
+
+    func clearWatchProgress(serverURL: URL, videoPath: String) async throws {
+        var components = URLComponents(url: serverURL, resolvingAgainstBaseURL: false)!
+        components.percentEncodedPath = "/api/watch-progress/\(videoPath)"
+
+        guard let progressURL = components.url else {
+            throw NetworkError.invalidURL
+        }
+
+        var request = URLRequest(url: progressURL)
+        request.httpMethod = "DELETE"
+
+        do {
+            let (_, response) = try await URLSession.shared.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw NetworkError.invalidResponse
+            }
+
+            guard httpResponse.statusCode == 200 else {
+                throw NetworkError.serverError(httpResponse.statusCode)
+            }
+        } catch let error as NetworkError {
+            throw error
+        } catch {
+            throw NetworkError.networkFailure(error)
+        }
+    }
 }
