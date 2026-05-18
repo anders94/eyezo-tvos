@@ -1,4 +1,4 @@
-# Video Client for tvOS
+# EyeZo for tvOS
 
 A lightweight tvOS video client app for browsing and playing videos from [video-server](https://github.com/anders94/video-server). Features a grid-based UI optimized for TV viewing with standard SwiftUI components and AVPlayerViewController.
 
@@ -10,6 +10,7 @@ A lightweight tvOS video client app for browsing and playing videos from [video-
 - **Video Playback**: Full-screen native video player with standard controls
 - **Thumbnail Previews**: Async thumbnail loading from server
 - **Focus Navigation**: Native tvOS focus engine support
+- **Watch Progress**: Automatic resume playback and progress tracking
 
 ## Architecture
 
@@ -19,88 +20,41 @@ A lightweight tvOS video client app for browsing and playing videos from [video-
 - **Pattern**: MVVM
 - **Dependencies**: Zero external dependencies (Apple frameworks only)
 
-## Project Setup
+## Building the Project
 
-### Option 1: Create Xcode Project and Add Files
+1. **Open the Xcode Project**:
+   - Navigate to `VideoClientTV/` folder
+   - Open `EyeZo-tvOS.xcodeproj`
 
-1. **Open Xcode** and select "Create a new Xcode project"
+2. **Select Target Device**:
+   - Choose an Apple TV simulator or your physical Apple TV from the scheme selector
 
-2. **Choose Template**:
-   - Select "tvOS" → "App"
-   - Click "Next"
-
-3. **Configure Project**:
-   - Product Name: `VideoClientTV`
-   - Team: Select your development team
-   - Organization Identifier: `com.yourcompany`
-   - Interface: `SwiftUI`
-   - Language: `Swift`
-   - Click "Next"
-
-4. **Choose Location**:
-   - Navigate to this directory: `/Users/anders/Documents/src/video-client-tvos`
-   - **IMPORTANT**: Uncheck "Create Git repository" (already exists)
-   - Click "Create"
-
-5. **Delete Default Files**:
-   - In the Project Navigator, delete the default `ContentView.swift` file (Move to Trash)
-
-6. **Add Existing Files**:
-   - Right-click on the `VideoClientTV` group in Project Navigator
-   - Select "Add Files to VideoClientTV..."
-   - Navigate to `/Users/anders/Documents/src/video-client-tvos/VideoClientTV/VideoClientTV/`
-   - Select all the folders: `Models/`, `Services/`, `ViewModels/`, `Views/`
-   - Also select `VideoClientTVApp.swift` and `Info.plist`
-   - **IMPORTANT**: Check "Copy items if needed" is UNCHECKED (files already in place)
-   - Click "Add"
-
-7. **Configure Info.plist**:
-   - In Project Navigator, select the project (VideoClientTV)
-   - Select the VideoClientTV target
-   - Go to "Build Settings" tab
-   - Search for "Info.plist File"
-   - Set the path to: `VideoClientTV/Info.plist`
-
-8. **Configure Assets**:
-   - Delete the default `Assets.xcassets` in Project Navigator
-   - Add the existing `Assets.xcassets` folder from `VideoClientTV/VideoClientTV/`
-
-9. **Set Deployment Target**:
-   - Select the project in Project Navigator
-   - Select the VideoClientTV target
-   - Go to "General" tab
-   - Set "Minimum Deployments" to tvOS 15.0
-
-10. **Build and Run**:
-    - Select an Apple TV simulator from the scheme selector
-    - Press `Cmd+R` to build and run
-
-### Option 2: Use Package.swift (Alternative - Advanced)
-
-If you prefer using Swift Package Manager, you can create a Package.swift file. However, for tvOS apps, using Xcode project is recommended.
+3. **Build and Run**:
+   - Press `Cmd+R` to build and run the app
 
 ## Project Structure
 
 ```
 VideoClientTV/
-├── VideoClientTV/
-│   ├── VideoClientTVApp.swift          # App entry point
-│   ├── Info.plist                       # Network security config
-│   ├── Assets.xcassets/                 # App icons and assets
-│   ├── Models/                          # Data models
-│   │   ├── VideoItem.swift
-│   │   ├── DirectoryItem.swift
-│   │   └── BrowseResponse.swift
-│   ├── Services/                        # Network & persistence
-│   │   ├── APIService.swift
-│   │   └── ServerURLManager.swift
-│   ├── ViewModels/                      # Business logic
-│   │   └── DirectoryViewModel.swift
-│   └── Views/                           # UI components
-│       ├── ServerSetupView.swift        # Server configuration
-│       ├── DirectoryBrowserView.swift   # Grid browser
-│       └── VideoPlayerView.swift        # Video player
-└── README.md
+├── EyeZo-tvOS.xcodeproj/
+└── EyeZo-tvOS/
+    ├── EyeZo-tvOSApp.swift          # App entry point
+    ├── Info.plist                    # Network security config
+    ├── Assets.xcassets/              # App icons and assets
+    ├── Models/                       # Data models
+    │   ├── VideoItem.swift
+    │   ├── DirectoryItem.swift
+    │   ├── BrowseResponse.swift
+    │   └── WatchProgress.swift
+    ├── Services/                     # Network & persistence
+    │   ├── APIService.swift
+    │   └── ServerURLManager.swift
+    ├── ViewModels/                   # Business logic
+    │   └── DirectoryViewModel.swift
+    └── Views/                        # UI components
+        ├── ServerSetupView.swift     # Server configuration
+        ├── DirectoryBrowserView.swift # Grid browser
+        └── VideoPlayerView.swift     # Video player
 ```
 
 ## Usage
@@ -208,4 +162,4 @@ See the iOS app's README for more details on the expected API format.
 
 ## License
 
-This project is companion to the iOS Video Client app.
+EyeZo for tvOS - A companion app for browsing and playing videos on Apple TV.
