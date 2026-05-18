@@ -23,7 +23,7 @@ A lightweight tvOS video client app for browsing and playing videos from [video-
 ## Building the Project
 
 1. **Open the Xcode Project**:
-   - Navigate to `VideoClientTV/` folder
+   - Navigate to `EyeZo-tvOS/` folder
    - Open `EyeZo-tvOS.xcodeproj`
 
 2. **Select Target Device**:
@@ -35,7 +35,7 @@ A lightweight tvOS video client app for browsing and playing videos from [video-
 ## Project Structure
 
 ```
-VideoClientTV/
+EyeZo-tvOS/
 ├── EyeZo-tvOS.xcodeproj/
 └── EyeZo-tvOS/
     ├── EyeZo-tvOSApp.swift          # App entry point
