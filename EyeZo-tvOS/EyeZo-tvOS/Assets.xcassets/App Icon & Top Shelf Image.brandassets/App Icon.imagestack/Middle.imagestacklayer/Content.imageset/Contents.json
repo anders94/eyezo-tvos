@@ -1,10 +1,12 @@
 {
   "images" : [
     {
+      "filename" : "icon-400-b.png",
       "idiom" : "tv",
       "scale" : "1x"
     },
     {
+      "filename" : "icon-800-b 1.png",
       "idiom" : "tv",
       "scale" : "2x"
     }
