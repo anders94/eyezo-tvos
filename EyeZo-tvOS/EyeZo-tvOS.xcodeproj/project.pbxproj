@@ -12,14 +12,14 @@
 			containerPortal = 9A08DBCA2FB9134000F75A1F /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 9A08DBD12FB9134000F75A1F;
-			remoteInfo = VideoClientTV;
+			remoteInfo = "EyeZo-tvOS";
 		};
 		9A08DBEA2FB9134200F75A1F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 9A08DBCA2FB9134000F75A1F /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 9A08DBD12FB9134000F75A1F;
-			remoteInfo = VideoClientTV;
+			remoteInfo = "EyeZo-tvOS";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -126,7 +126,7 @@
 			name = "EyeZo-tvOS";
 			packageProductDependencies = (
 			);
-			productName = VideoClientTV;
+			productName = "EyeZo-tvOS";
 			productReference = 9A08DBD22FB9134000F75A1F /* EyeZo-tvOS.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -149,7 +149,7 @@
 			name = "EyeZo-tvOSTests";
 			packageProductDependencies = (
 			);
-			productName = VideoClientTVTests;
+			productName = "EyeZo-tvOSTests";
 			productReference = 9A08DBDF2FB9134200F75A1F /* EyeZo-tvOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
@@ -172,7 +172,7 @@
 			name = "EyeZo-tvOSUITests";
 			packageProductDependencies = (
 			);
-			productName = VideoClientTVUITests;
+			productName = "EyeZo-tvOSUITests";
 			productReference = 9A08DBE92FB9134200F75A1F /* EyeZo-tvOSUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
@@ -474,7 +474,7 @@
 				DEVELOPMENT_TEAM = A36HZ8344B;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.andersbrownworth.VideoClientTVTests;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.andersbrownworth.EyeZo-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -496,7 +496,7 @@
 				DEVELOPMENT_TEAM = A36HZ8344B;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.andersbrownworth.VideoClientTVTests;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.andersbrownworth.EyeZo-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -517,7 +517,7 @@
 				DEVELOPMENT_TEAM = A36HZ8344B;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.andersbrownworth.VideoClientTVUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.andersbrownworth.EyeZo-tvOSUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -525,7 +525,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TEST_TARGET_NAME = VideoClientTV;
+				TEST_TARGET_NAME = "EyeZo-tvOS";
 			};
 			name = Debug;
 		};
@@ -537,7 +537,7 @@
 				DEVELOPMENT_TEAM = A36HZ8344B;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.andersbrownworth.VideoClientTVUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.andersbrownworth.EyeZo-tvOSUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -545,7 +545,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TEST_TARGET_NAME = VideoClientTV;
+				TEST_TARGET_NAME = "EyeZo-tvOS";
 			};
 			name = Release;
 		};

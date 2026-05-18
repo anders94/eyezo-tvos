@@ -1,6 +1,6 @@
 # EyeZo for tvOS
 
-A lightweight tvOS video client app for browsing and playing videos from [video-server](https://github.com/anders94/video-server). Features a grid-based UI optimized for TV viewing with standard SwiftUI components and AVPlayerViewController.
+A lightweight tvOS app for browsing and playing videos from [eyezo-server](https://github.com/anders94/eyezo-server). Features a grid-based UI optimized for TV viewing with standard SwiftUI components and AVPlayerViewController.
 
 ## Features
 

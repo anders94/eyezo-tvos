@@ -57,7 +57,7 @@ struct VideoPlayerView: UIViewControllerRepresentable {
         // Progress update throttling
         private var isUpdating = false
         private var pendingPosition: Double?
-        private let updateQueue = DispatchQueue(label: "com.videoclient.progressUpdate")
+        private let updateQueue = DispatchQueue(label: "com.eyezo.progressUpdate")
 
         init(video: VideoItem, serverURL: URL?) {
             self.video = video

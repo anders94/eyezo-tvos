@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct VideoClientTVApp: App {
+struct EyeZoApp: App {
     @StateObject private var serverURLManager = ServerURLManager.shared
     @State private var isCheckingServer = true
     @State private var serverIsValid = false
