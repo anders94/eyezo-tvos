@@ -34,7 +34,7 @@ struct EyeZoApp: App {
             .task {
                 await checkServerStatus()
             }
-            .onChange(of: serverURLManager.serverURL) { _ in
+            .onChange(of: serverURLManager.serverURL) {
                 // When server URL changes, re-validate
                 Task {
                     await checkServerStatus()

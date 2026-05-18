@@ -32,7 +32,7 @@ struct ServerSetupView: View {
                         .background(Color.secondary.opacity(0.2))
                         .cornerRadius(10)
                         .padding(.horizontal, 80)
-                        .onChange(of: urlInput) { _ in
+                        .onChange(of: urlInput) {
                             errorMessage = nil
                         }
 
