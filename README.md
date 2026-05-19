@@ -162,4 +162,4 @@ See the iOS app's README for more details on the expected API format.
 
 ## License
 
-EyeZo for tvOS - A companion app for browsing and playing videos on Apple TV.
+MIT License - See [LICENSE](LICENSE) file for details.
