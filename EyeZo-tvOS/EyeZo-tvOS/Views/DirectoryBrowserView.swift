@@ -5,7 +5,6 @@ struct DirectoryBrowserView: View {
     @StateObject private var serverURLManager = ServerURLManager.shared
     @State private var selectedVideo: VideoItem?
     @State private var showingServerSetup = false
-    @Namespace private var focusNamespace
 
     let initialPath: String?
 
@@ -13,12 +12,33 @@ struct DirectoryBrowserView: View {
         guard let path = viewModel.currentPath else { return "Videos" }
         // Extract just the last component of the path for display
         let components = path.split(separator: "/")
-        return components.last.map(String.init) ?? "Videos"
+        guard let last = components.last.map(String.init) else { return "Videos" }
+        // Decode percent-encoding so paths with spaces (%20) display correctly
+        return last.removingPercentEncoding ?? last
     }
 
     var body: some View {
-        NavigationView {
-            Group {
+        Group {
+            // Only the root instance owns the NavigationView. Pushed child
+            // instances render their content directly; wrapping each in its own
+            // NavigationView breaks tvOS focus routing after a push/pop cycle.
+            if initialPath == nil {
+                NavigationView {
+                    content
+                }
+                .navigationViewStyle(.stack)
+            } else {
+                content
+            }
+        }
+        .task {
+            await viewModel.loadDirectory(initialPath)
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        Group {
                 if viewModel.isLoading && viewModel.directories.isEmpty && viewModel.videos.isEmpty {
                     VStack(spacing: 30) {
                         ProgressView()
@@ -65,7 +85,6 @@ struct DirectoryBrowserView: View {
                                     DirectoryCard(directory: directory)
                                 }
                                 .buttonStyle(.card)
-                                .prefersDefaultFocus(index == 0 && viewModel.videos.isEmpty, in: focusNamespace)
                             }
 
                             // Videos
@@ -76,10 +95,9 @@ struct DirectoryBrowserView: View {
                                     VideoCard(video: video, serverURL: serverURLManager.serverURL)
                                 }
                                 .buttonStyle(.card)
-                                .prefersDefaultFocus(index == 0 && viewModel.directories.isEmpty, in: focusNamespace)
                             }
                         }
-                        .focusScope(focusNamespace)
+                        .focusSection()
                         .padding(80)
 
                         // Empty state
@@ -134,11 +152,6 @@ struct DirectoryBrowserView: View {
             }) {
                 ServerSetupView()
             }
-        }
-        .navigationViewStyle(.stack)
-        .task {
-            await viewModel.loadDirectory(initialPath)
-        }
     }
 
     init(initialPath: String? = nil) {
@@ -152,15 +165,15 @@ struct DirectoryCard: View {
     var body: some View {
         VStack(spacing: 20) {
             Image(systemName: "folder.fill")
-                .font(.system(size: 80))
+                .font(.system(size: 70))
                 .foregroundColor(.blue)
-                .frame(height: 160)
+                .frame(height: 120)
 
             Text(directory.name)
                 .font(.body)
                 .fontWeight(.medium)
                 .foregroundColor(.primary)
-                .lineLimit(3)
+                .lineLimit(2)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 20)
         }
