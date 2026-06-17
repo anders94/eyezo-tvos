@@ -5,8 +5,17 @@ struct DirectoryBrowserView: View {
     @StateObject private var serverURLManager = ServerURLManager.shared
     @State private var selectedVideo: VideoItem?
     @State private var showingServerSetup = false
+    @State private var hasSetInitialFocus = false
+    @FocusState private var focusedItem: String?
 
     let initialPath: String?
+
+    /// The grid item that should receive focus by default: the first directory,
+    /// or the first video if there are no directories. Nil only when the
+    /// directory is empty, in which case focus falls back to the settings icon.
+    private var defaultFocusID: String? {
+        viewModel.directories.first?.id ?? viewModel.videos.first?.id
+    }
 
     private var displayTitle: String {
         guard let path = viewModel.currentPath else { return "Videos" }
@@ -33,6 +42,16 @@ struct DirectoryBrowserView: View {
         }
         .task {
             await viewModel.loadDirectory(initialPath)
+        }
+        // The grid appears only after the async load finishes, by which point
+        // focus has already settled on the toolbar gear (the only focusable view
+        // shown during loading). .defaultFocus can't steal already-established
+        // focus, so move it to the first item ourselves once content arrives.
+        // Guarded so later refreshes don't yank focus away from the user.
+        .onChange(of: viewModel.isLoading) { _, loading in
+            guard !loading, !hasSetInitialFocus, let target = defaultFocusID else { return }
+            hasSetInitialFocus = true
+            focusedItem = target
         }
     }
 
@@ -85,6 +104,7 @@ struct DirectoryBrowserView: View {
                                     DirectoryCard(directory: directory)
                                 }
                                 .buttonStyle(.card)
+                                .focused($focusedItem, equals: directory.id)
                             }
 
                             // Videos
@@ -95,9 +115,11 @@ struct DirectoryBrowserView: View {
                                     VideoCard(video: video, serverURL: serverURLManager.serverURL)
                                 }
                                 .buttonStyle(.card)
+                                .focused($focusedItem, equals: video.id)
                             }
                         }
                         .focusSection()
+                        .defaultFocus($focusedItem, defaultFocusID)
                         .padding(80)
 
                         // Empty state
