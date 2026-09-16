@@ -81,7 +81,7 @@ final class GridNavigationUITests: XCTestCase {
 
         // Enter the grid if focus is still in the toolbar, then walk to Movies.
         var trail = [focusedLabel()]
-        if trail[0] == "gearshape" {
+        if trail[0] == "gearshape" || trail[0] == "Settings" {
             remote.press(.down)
             usleep(300_000)
             trail.append(focusedLabel())
@@ -117,9 +117,10 @@ final class GridNavigationUITests: XCTestCase {
         openMovies()
         saveScreenshot("movies")
 
-        // The focused card is scaled by the card button style, so exclude it.
+        // Grid cards only: skip the header's settings control, and skip the
+        // focused card because the card button style scales it.
         let cards = app.buttons.allElementsBoundByIndex.filter {
-            $0.frame.width > 100 && !$0.hasFocus && $0.frame.minY > 0
+            $0.label != "Settings" && !$0.hasFocus && $0.frame.minY > 0
         }
         XCTAssertGreaterThan(cards.count, 4)
 
@@ -137,6 +138,10 @@ final class GridNavigationUITests: XCTestCase {
                 XCTAssertLessThanOrEqual(a.frame.maxX, b.frame.minX + 1, "\(a.label) overlaps \(b.label)")
             }
         }
+
+        // Menu pops back to the root listing.
+        remote.press(.menu)
+        XCTAssertTrue(app.buttons["Documentary"].waitForExistence(timeout: 10), "Menu did not navigate back to the root")
     }
 
     @MainActor

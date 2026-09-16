@@ -95,36 +95,28 @@ struct DirectoryBrowserView: View {
 
     @ViewBuilder
     private var content: some View {
-        Group {
-            if viewModel.isLoading && isEmpty {
-                loadingView
-            } else if let errorMessage = viewModel.errorMessage, isEmpty {
-                errorView(errorMessage)
-            } else if isEmpty {
-                emptyView
-            } else {
-                grid
-            }
-        }
-        .navigationTitle(displayTitle)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                HStack(spacing: 30) {
-                    if viewModel.serverUnreachable {
-                        Image(systemName: "exclamationmark.circle.fill")
-                            .foregroundColor(.red)
-                            .font(.title3)
-                    }
+        VStack(spacing: 0) {
+            header
 
-                    Button(action: {
-                        showingServerSetup = true
-                    }) {
-                        Image(systemName: "gearshape")
-                            .font(.title3)
-                    }
+            Group {
+                if viewModel.isLoading && isEmpty {
+                    loadingView
+                } else if let errorMessage = viewModel.errorMessage, isEmpty {
+                    errorView(errorMessage)
+                } else if isEmpty {
+                    emptyView
+                } else {
+                    grid
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+        // The title row is drawn here rather than with .navigationTitle and a
+        // toolbar button. The tvOS 26 navigation bar forces its own fixed
+        // styling on toolbar buttons (a small glyph in a large pill, and text
+        // that renders unreadably), ignoring font, shape and style modifiers.
+        // A plain header keeps the same look with standard, sizable controls.
+        .toolbar(.hidden, for: .navigationBar)
         .fullScreenCover(item: $selectedVideo, onDismiss: {
             // Wait for server to process the final progress update, then refresh
             Task {
@@ -176,8 +168,36 @@ struct DirectoryBrowserView: View {
             .focusSection()
             .defaultFocus($focusedItem, defaultFocusID)
             .padding(.horizontal, CardMetrics.horizontalPadding)
-            .padding(.vertical, 60)
+            .padding(.top, 40)
+            .padding(.bottom, 60)
         }
+    }
+
+    /// Centered title with the settings control at the trailing edge, in the
+    /// position the navigation bar title row would occupy.
+    private var header: some View {
+        ZStack {
+            Text(displayTitle)
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                .foregroundStyle(.secondary)
+
+            HStack(spacing: 30) {
+                Spacer()
+
+                if viewModel.serverUnreachable {
+                    Image(systemName: "exclamationmark.circle.fill")
+                        .foregroundStyle(.red)
+                        .accessibilityLabel("Server unreachable")
+                }
+
+                Button("Settings", systemImage: "gearshape") {
+                    showingServerSetup = true
+                }
+                .buttonStyle(.bordered)
+            }
+        }
+        .padding(.horizontal, CardMetrics.horizontalPadding)
     }
 
     private var loadingView: some View {
