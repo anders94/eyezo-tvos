@@ -24,11 +24,19 @@ enum NetworkError: Error, LocalizedError {
 }
 
 class APIService {
+    /// A down or wrong server should surface as an error in seconds, not after
+    /// the default 60 s request timeout.
+    private static let session: URLSession = {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 10
+        return URLSession(configuration: configuration)
+    }()
+
     func checkHealth(serverURL: URL) async throws -> Bool {
         let healthURL = serverURL.appendingPathComponent("api/health")
 
         do {
-            let (_, response) = try await URLSession.shared.data(from: healthURL)
+            let (_, response) = try await Self.session.data(from: healthURL)
 
             if let httpResponse = response as? HTTPURLResponse {
                 return httpResponse.statusCode == 200
@@ -50,7 +58,7 @@ class APIService {
         }
 
         do {
-            let (data, response) = try await URLSession.shared.data(from: browseURL)
+            let (data, response) = try await Self.session.data(from: browseURL)
 
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw NetworkError.invalidResponse
@@ -104,7 +112,7 @@ class APIService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
         do {
-            let (_, response) = try await URLSession.shared.data(for: request)
+            let (_, response) = try await Self.session.data(for: request)
 
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw NetworkError.invalidResponse
@@ -129,7 +137,7 @@ class APIService {
         }
 
         do {
-            let (data, response) = try await URLSession.shared.data(from: progressURL)
+            let (data, response) = try await Self.session.data(from: progressURL)
 
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw NetworkError.invalidResponse
@@ -165,7 +173,7 @@ class APIService {
         request.httpMethod = "DELETE"
 
         do {
-            let (_, response) = try await URLSession.shared.data(for: request)
+            let (_, response) = try await Self.session.data(for: request)
 
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw NetworkError.invalidResponse

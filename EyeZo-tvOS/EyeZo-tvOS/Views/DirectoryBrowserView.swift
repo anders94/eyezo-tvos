@@ -46,7 +46,7 @@ struct DirectoryBrowserView: View {
 
     /// The grid item that should receive focus by default: the first directory,
     /// or the first video if there are no directories. Nil only when the
-    /// directory is empty, in which case focus falls back to the settings icon.
+    /// directory is empty, in which case focus falls back to the Server button.
     private var defaultFocusID: String? {
         viewModel.directories.first?.id ?? viewModel.videos.first?.id
     }
@@ -82,7 +82,7 @@ struct DirectoryBrowserView: View {
             await viewModel.loadDirectory(initialPath)
         }
         // The grid appears only after the async load finishes, by which point
-        // focus has already settled on the toolbar gear (the only focusable view
+        // focus has already settled on the Server button (the only focusable view
         // shown during loading). .defaultFocus can't steal already-established
         // focus, so move it to the first item ourselves once content arrives.
         // Guarded so later refreshes don't yank focus away from the user.
@@ -173,7 +173,7 @@ struct DirectoryBrowserView: View {
         }
     }
 
-    /// Centered title with the settings control at the trailing edge, in the
+    /// Centered title with the server control at the trailing edge, in the
     /// position the navigation bar title row would occupy.
     private var header: some View {
         ZStack {
@@ -191,11 +191,14 @@ struct DirectoryBrowserView: View {
                         .accessibilityLabel("Server unreachable")
                 }
 
-                Button("Settings", systemImage: "gearshape") {
+                Button("Server", systemImage: "server.rack") {
                     showingServerSetup = true
                 }
                 .buttonStyle(.bordered)
             }
+            // A focus section spans the full header width, so pressing up from
+            // any column of the grid lands on the Server button.
+            .focusSection()
         }
         .padding(.horizontal, CardMetrics.horizontalPadding)
     }

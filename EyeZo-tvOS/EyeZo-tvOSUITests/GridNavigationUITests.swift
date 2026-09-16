@@ -18,7 +18,7 @@ final class GridNavigationUITests: XCTestCase {
     private var app: XCUIApplication!
     private let remote = XCUIRemote.shared
 
-    private static var configuredServerURL: String? {
+    static var configuredServerURL: String? {
         if let url = ProcessInfo.processInfo.environment["EYEZO_SERVER_URL"], !url.isEmpty {
             return url
         }
@@ -81,7 +81,7 @@ final class GridNavigationUITests: XCTestCase {
 
         // Enter the grid if focus is still in the toolbar, then walk to Movies.
         var trail = [focusedLabel()]
-        if trail[0] == "gearshape" || trail[0] == "Settings" {
+        if trail[0] == "Server" {
             remote.press(.down)
             usleep(300_000)
             trail.append(focusedLabel())
@@ -117,10 +117,10 @@ final class GridNavigationUITests: XCTestCase {
         openMovies()
         saveScreenshot("movies")
 
-        // Grid cards only: skip the header's settings control, and skip the
+        // Grid cards only: skip the header's Server control, and skip the
         // focused card because the card button style scales it.
         let cards = app.buttons.allElementsBoundByIndex.filter {
-            $0.label != "Settings" && !$0.hasFocus && $0.frame.minY > 0
+            $0.label != "Server" && !$0.hasFocus && $0.frame.minY > 0
         }
         XCTAssertGreaterThan(cards.count, 4)
 

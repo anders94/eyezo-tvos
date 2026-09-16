@@ -27,22 +27,27 @@ class ServerURLManager: ObservableObject {
         self.serverURL = url
     }
 
-    func clearServerURL() {
-        self.serverURL = nil
-    }
+    /// Turns what the user typed into a server URL, or nil if it can't be one.
+    ///
+    /// Trims whitespace, assumes `http://` when no scheme is given, drops a
+    /// trailing slash, and requires a host. Kept pure so it can be unit-tested.
+    static func normalizedServerURL(from input: String) -> URL? {
+        var string = input.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !string.isEmpty else { return nil }
 
-    func validateServerURL(_ url: URL) async -> Bool {
-        let healthURL = url.appendingPathComponent("api/health")
-
-        do {
-            let (_, response) = try await URLSession.shared.data(from: healthURL)
-
-            if let httpResponse = response as? HTTPURLResponse {
-                return httpResponse.statusCode == 200
-            }
-            return false
-        } catch {
-            return false
+        let lowercased = string.lowercased()
+        if !lowercased.hasPrefix("http://") && !lowercased.hasPrefix("https://") {
+            string = "http://" + string
         }
+
+        while string.hasSuffix("/") {
+            string.removeLast()
+        }
+
+        guard let components = URLComponents(string: string),
+              let host = components.host, !host.isEmpty else {
+            return nil
+        }
+        return components.url
     }
 }
