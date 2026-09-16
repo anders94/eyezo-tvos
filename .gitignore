@@ -91,3 +91,6 @@ iOSInjectionProject/
 
 # macOS
 .DS_Store
+
+# Local UI test configuration (server address); see EyeZo-tvOSUITests/GridNavigationUITests.swift
+EyeZo-tvOS/EyeZo-tvOSUITests/TestServer.plist
